@@ -22,12 +22,13 @@ module Zimbra
       end
     end
 
-    attr_accessor :id, :name, :acls
+    attr_accessor :id, :name, :acls, :pre_auth_key
 
-    def initialize(id, name, acls = [])
+    def initialize(id, name, acls = [], pre_auth_key)
       self.id = id 
       self.name = name
       self.acls = acls || []
+      self.pre_auth_key = pre_auth_key
     end
 
     def save
@@ -130,7 +131,8 @@ module Zimbra
           id = (node/'@id').to_s
           name = (node/'@name').to_s
           acls = Zimbra::ACL.read(node)
-          Zimbra::Domain.new(id, name, acls) 
+          pre_auth_key = Zimbra::A.read(node, 'zimbraPreAuthKey')
+          Zimbra::Domain.new(id, name, acls, pre_auth_key) 
         end
       end
     end
