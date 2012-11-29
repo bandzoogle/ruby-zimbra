@@ -49,7 +49,7 @@ module Zimbra
           id = (node/'@id').to_s
           name = (node/'@name').to_s
 
-          members = (node/"n2:a[@n='zimbraMailForwardingAddress']")
+          members = (node/"n2:a[@n='zimbraMailForwardingAddress']").map { |x| x.to_s }
 
           Zimbra::DistributionList.new(
                                        :id => id,
