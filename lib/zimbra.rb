@@ -6,6 +6,7 @@ require 'zimbra/domain'
 require 'zimbra/distribution_list'
 require 'zimbra/account'
 require 'zimbra/acl'
+require 'zimbra/search_directory'
 require 'zimbra/common_elements'
 
 # Manages a Zimbra SOAP session.  Offers ability to set the endpoint URL, log in, and enable debugging.
