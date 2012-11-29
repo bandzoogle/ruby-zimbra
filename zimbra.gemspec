@@ -5,7 +5,9 @@ Gem::Specification.new do |s|
   s.description = 'Interface to Zimbra management API'
   s.summary = 'Interface to Zimbra management API'
   s.email = %q{derek@vedit.com mwilson@vedit.com}
+  s.authors = ["People"]
 
+  
   s.files = ['README'] + Dir.glob("lib/**/*.rb")
   s.require_paths = ["lib"]
   
