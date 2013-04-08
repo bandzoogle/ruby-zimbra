@@ -22,15 +22,12 @@ module Zimbra
       end
     end
 
-    attr_accessor :id, :name, :admin_console_ui_components, :admin_group, :members
+    attr_accessor :id, :name, :members
+    #:admin_console_ui_components, :admin_group
 
     def initialize(options = {})
       options.each { |name, value| self.send("#{name}=", value) }
       @original_members = self.members.dup
-    end
-
-    def admin_console_ui_components
-      @admin_console_ui_components ||= []
     end
 
     def members
@@ -43,13 +40,6 @@ module Zimbra
 
     def removed_members
       @original_members - self.members
-    end
-
-    def admin_group=(val)
-      @admin_group = Zimbra::Boolean.read(val) 
-    end
-    def admin_group?
-      @admin_group
     end
 
     def delete
@@ -150,22 +140,6 @@ module Zimbra
         end
 
         def modify_attributes(message, distribution_list)
-          modify_admin_console_ui_components(message, distribution_list)
-          modify_is_admin_group(message, distribution_list)
-        end
-
-        def modify_admin_console_ui_components(message, distribution_list)
-          if distribution_list.admin_console_ui_components.empty?
-            A.inject(message, 'zimbraAdminConsoleUIComponents', '')
-          else
-            distribution_list.admin_console_ui_components.each do |component|
-              A.inject(message, 'zimbraAdminConsoleUIComponents', component)
-            end
-          end
-        end
-
-        def modify_is_admin_group(message, distribution_list)
-          A.inject(message, 'zimbraIsAdminGroup', (distribution_list.admin_group? ? 'TRUE' : 'FALSE'))
         end
 
         def add_member(message, distribution_list_id, member)
@@ -193,12 +167,9 @@ module Zimbra
         def distribution_list_response(node)
           id = (node/'@id').to_s
           name = (node/'@name').to_s
-          ui_components = A.read(node, 'zimbraAdminConsoleUIComponents')
-          admin_group = A.read(node, 'zimbraIsAdminGroup')
           members = (node/"//n2:dlm").map { |n| n.to_s }
 
           Zimbra::DistributionList.new(:id => id, :name => name,
-            :admin_console_ui_components => ui_components, :admin_group => admin_group,
             :members => members)
         end
       end
