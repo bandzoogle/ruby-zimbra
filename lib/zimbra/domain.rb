@@ -24,7 +24,7 @@ module Zimbra
 
     attr_accessor :id, :name, :acls, :pre_auth_key
 
-    def initialize(id, name, acls = [], pre_auth_key)
+    def initialize(id, name, acls = [], pre_auth_key = nil)
       self.id = id 
       self.name = name
       self.acls = acls || []
@@ -103,6 +103,8 @@ module Zimbra
         def modify(message, domain)
           message.add 'id', domain.id
           modify_attributes(message, domain)
+
+          Zimbra::A.inject(message, 'zimbraPreAuthKey', domain.pre_auth_key)
         end
         def modify_attributes(message, domain)
           if domain.acls.empty?

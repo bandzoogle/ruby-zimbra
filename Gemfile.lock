@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zimbra (0.0.4)
+    zimbra (0.0.5)
       handsoap
 
 GEM
