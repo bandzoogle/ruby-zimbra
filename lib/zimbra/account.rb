@@ -147,7 +147,9 @@ module Zimbra
           name = (node/'@name').to_s
           acls = Zimbra::ACL.read(node)
           cos_id = Zimbra::A.read(node, 'zimbraCOSId')
-          aliases = Zimbra::A.read(node, 'mail').reject { |e| e == name }
+
+          tmp = (node/"n2:a[@n='mail']")
+          aliases = tmp.collect { |t| t.to_s }.reject { |e| e == name }
           
           delegated_admin = Zimbra::A.read(node, 'zimbraIsDelegatedAdminAccount')
           Zimbra::Account.new(:id => id, :name => name, :acls => acls, :cos_id => cos_id, :delegated_admin => delegated_admin, :aliases => aliases)
