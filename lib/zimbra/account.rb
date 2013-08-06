@@ -23,7 +23,7 @@ module Zimbra
       end
     end
 
-    attr_accessor :id, :name, :password, :acls, :cos_id, :delegated_admin
+    attr_accessor :id, :name, :password, :acls, :cos_id, :delegated_admin, :aliases
 
     def initialize(options = {})
       self.id = options[:id]
@@ -32,6 +32,7 @@ module Zimbra
       self.acls = options[:acls] || []
       self.cos_id = (options[:cos] ? options[:cos].id : options[:cos_id])
       self.delegated_admin = options[:delegated_admin]
+      self.aliases = options[:aliases] || []
     end
 
     def delegated_admin=(val)
@@ -146,8 +147,10 @@ module Zimbra
           name = (node/'@name').to_s
           acls = Zimbra::ACL.read(node)
           cos_id = Zimbra::A.read(node, 'zimbraCOSId')
+          aliases = Zimbra::A.read(node, 'mail').reject { |e| e == name }
+          
           delegated_admin = Zimbra::A.read(node, 'zimbraIsDelegatedAdminAccount')
-          Zimbra::Account.new(:id => id, :name => name, :acls => acls, :cos_id => cos_id, :delegated_admin => delegated_admin)
+          Zimbra::Account.new(:id => id, :name => name, :acls => acls, :cos_id => cos_id, :delegated_admin => delegated_admin, :aliases => aliases)
         end
       end
     end
