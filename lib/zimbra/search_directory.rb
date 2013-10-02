@@ -65,10 +65,19 @@ module Zimbra
           cos_id = Zimbra::A.read(node, 'zimbraCOSId')
           delegated_admin = Zimbra::A.read(node, 'zimbraIsDelegatedAdminAccount')
 
+          tmp = (node/"n2:a[@n='displayName']").first
+
+          display_name = tmp.to_s
+
+          tmp = (node/"n2:a[@n='zimbraPrefMailForwardingAddress']").first
+          forwarding = tmp.to_s
+
+          # <a n="displayName">Bedtime Kennels</a>
+          
           tmp = (node/"n2:a[@n='mail']")
           aliases = tmp.collect { |t| t.to_s }.reject { |e| e == name }
-          
-          Zimbra::Account.new(:id => id, :name => name, :acls => acls, :cos_id => cos_id, :delegated_admin => delegated_admin, :aliases => aliases)
+
+          Zimbra::Account.new(:id => id, :name => name, :display_name => display_name, :acls => acls, :cos_id => cos_id, :delegated_admin => delegated_admin, :aliases => aliases, :forwarding => forwarding)
         end
       end
     end
