@@ -48,6 +48,10 @@ module Zimbra
       AccountService.modify(self)
     end
 
+    def set_password
+      AccountService.set_password(self, self.password)
+    end
+
     def delete
       AccountService.delete(self)
     end
@@ -89,6 +93,13 @@ module Zimbra
       Parser.account_response(xml/'//n2:account')
     end 
 
+    def set_password(account, password)
+      xml = invoke("n2:SetPasswordRequest") do |message|
+        Builder.set_password(message, account, password)
+      end
+      true
+    end 
+    
     def delete(dist)
       xml = invoke("n2:DeleteAccountRequest") do |message|
         Builder.delete(message, dist.id)
@@ -117,12 +128,14 @@ module Zimbra
 
         def modify(message, account)
           message.add 'id', account.id
-          if account.password.present?
-            message.add 'password', account.password
-          end
-
           modify_attributes(message, account)
         end
+
+        def set_password(message, account, password)
+          message.add 'id', account.id
+          message.add 'newPassword', account.password
+        end
+
         def modify_attributes(message, account)
           if account.acls.empty?
             ACL.delete_all(message)
