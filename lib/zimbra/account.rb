@@ -117,7 +117,7 @@ module Zimbra
 
         def modify(message, account)
           message.add 'id', account.id
-          modify_attributes(message, distribution_list)
+          modify_attributes(message, account)
         end
         def modify_attributes(message, account)
           if account.acls.empty?
