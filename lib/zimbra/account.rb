@@ -127,8 +127,8 @@ module Zimbra
               acl.apply(message)
             end
           end
-          Zimbra::A.inject(node, 'zimbraCOSId', account.cos_id)
-          Zimbra::A.inject(node, 'zimbraIsDelegatedAdminAccount', (delegated_admin ? 'TRUE' : 'FALSE'))
+          Zimbra::A.inject(message, 'zimbraCOSId', account.cos_id)
+          Zimbra::A.inject(message, 'zimbraIsDelegatedAdminAccount', (delegated_admin ? 'TRUE' : 'FALSE'))
         end
 
         def delete(message, id)
