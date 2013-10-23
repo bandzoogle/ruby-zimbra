@@ -128,7 +128,7 @@ module Zimbra
             end
           end
           Zimbra::A.inject(message, 'zimbraCOSId', account.cos_id)
-          Zimbra::A.inject(message, 'zimbraIsDelegatedAdminAccount', (delegated_admin ? 'TRUE' : 'FALSE'))
+          Zimbra::A.inject(message, 'zimbraIsDelegatedAdminAccount', (delegated_admin? ? 'TRUE' : 'FALSE'))
         end
 
         def delete(message, id)
