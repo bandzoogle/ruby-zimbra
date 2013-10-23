@@ -117,6 +117,10 @@ module Zimbra
 
         def modify(message, account)
           message.add 'id', account.id
+          if account.password.present?
+            message.add 'password', account.password
+          end
+
           modify_attributes(message, account)
         end
         def modify_attributes(message, account)
