@@ -38,6 +38,14 @@ module Zimbra
     def delete
       DomainService.delete(self)
     end
+
+    def disable
+      DomainService.disable(self)
+    end
+    def enable
+      DomainService.enable(self)
+    end
+
   end
   
   class DomainService < HandsoapService
@@ -76,6 +84,20 @@ module Zimbra
       Parser.domain_response(xml/'//n2:domain')
     end 
 
+    def disable(domain)
+      xml = invoke("n2:ModifyDomainRequest") do |message|
+        Builder.modify_status(message, domain, 'closed')
+      end
+      Parser.domain_response(xml/'//n2:domain')
+    end 
+
+    def enable(domain)
+      xml = invoke("n2:ModifyDomainRequest") do |message|
+        Builder.modify_status(message, domain, 'active')
+      end
+      Parser.domain_response(xml/'//n2:domain')
+    end 
+
     def delete(dist)
       xml = invoke("n2:DeleteDomainRequest") do |message|
         Builder.delete(message, dist.id)
@@ -106,6 +128,12 @@ module Zimbra
 
           Zimbra::A.inject(message, 'zimbraPreAuthKey', domain.pre_auth_key)
         end
+
+        def modify_status(message, domain, status)
+          message.add 'id', domain.id
+          Zimbra::A.inject(message, 'zimbraDomainStatus', status)
+        end
+        
         def modify_attributes(message, domain)
           if domain.acls.empty?
             ACL.delete_all(message)
