@@ -23,7 +23,7 @@ module Zimbra
       end
     end
 
-    attr_accessor :id, :name, :display_name, :password, :acls, :cos_id, :delegated_admin, :aliases, :forwarding
+    attr_accessor :id, :name, :display_name, :password, :acls, :cos_id, :delegated_admin, :aliases, :forwarding, :status
 
     def initialize(options = {})
       self.id = options[:id]
@@ -35,6 +35,7 @@ module Zimbra
       self.delegated_admin = options[:delegated_admin]
       self.aliases = options[:aliases] || []
       self.forwarding = options[:forwarding]
+      self.status = options[:status]
     end
 
     def delegated_admin=(val)
@@ -146,6 +147,10 @@ module Zimbra
           end
           Zimbra::A.inject(message, 'zimbraCOSId', account.cos_id)
           Zimbra::A.inject(message, 'zimbraIsDelegatedAdminAccount', (account.delegated_admin? ? 'TRUE' : 'FALSE'))
+
+          if !account.status.nil?
+            Zimbra::A.inject(message, 'zimbraAccountStatus', account.status)
+          end
         end
 
         def delete(message, id)
@@ -171,11 +176,20 @@ module Zimbra
 
           display_name = Zimbra::A.read(node, 'displayName')
           forwarding = Zimbra::A.read(node, 'zimbraPrefMailForwardingAddress')
+          status = Zimbra::A.read(node, 'zimbraAccountStatus')
           
           aliases = tmp.collect { |t| t.to_s }.reject { |e| e == name }
           
           delegated_admin = Zimbra::A.read(node, 'zimbraIsDelegatedAdminAccount')
-          Zimbra::Account.new(:id => id, :name => name, :display_name => display_name, :acls => acls, :cos_id => cos_id, :delegated_admin => delegated_admin, :aliases => aliases, :forwarding => forwarding)
+          Zimbra::Account.new(:id => id,
+                              :name => name,
+                              :display_name => display_name,
+                              :acls => acls,
+                              :cos_id => cos_id,
+                              :delegated_admin => delegated_admin,
+                              :aliases => aliases,
+                              :forwarding => forwarding,
+                              :status => status)
         end
       end
     end
